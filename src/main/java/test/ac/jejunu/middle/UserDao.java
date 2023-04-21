@@ -10,68 +10,30 @@ public class UserDao {
         this.jdbcContext = jdbcContext;
     }
 
-    public User findById(Long id) throws ClassNotFoundException, SQLException {
-        String sql ="select id, name, password from userinfo where id = ?";
+    public User findById(Long id) throws SQLException {
+        String sql = "select id, name, password from userinfo where id = ?";
+        Object[] params = new Object[]{id};
 
-        StatementStrategy statementStrategy = connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement
-                    (sql);
-            Object[] params = new Object[]{id};
-            for (int i = 0; i < params.length; i++) {
-                preparedStatement.setObject(i + 1, params[i]);
-            }
-
-            return preparedStatement;
-        };
-        return jdbcContext.jdbcContextForFind(statementStrategy);
+        return jdbcContext.find(sql, params);
     }
 
-    public void insert(User user) throws ClassNotFoundException, SQLException {
-        String sql ="insert into userinfo (name, password) values ( ?, ? )";
+    public void insert(User user) throws SQLException {
+        String sql = "insert into userinfo (name, password) values ( ?, ? )";
         Object[] params = new Object[] {user.getName(), user.getPassword()};
-                StatementStrategy statementStrategy = connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement
-                    (sql, Statement.RETURN_GENERATED_KEYS);
-                    for (int i = 0; i < params.length; i++) {
-                        preparedStatement.setObject(i + 1, params[i]);
-                    }
-            return preparedStatement;
-        };
-        jdbcContext.jdbcContextForInsert(user, statementStrategy);
+        jdbcContext.insert(user, sql, params, this);
     }
 
     public void update(User user) throws SQLException {
         String sql = "update userinfo set name = ?, password = ? where id = ?";
         Object[] params = new Object[]{user.getName(), user.getPassword(), user.getId()};
+        jdbcContext.update(sql, params);
 
-        StatementStrategy statementStrategy = getStatementStrategy(sql, params);
-        jdbcContext.jdbcContextForUpdate(statementStrategy);
-
-    }
-
-    private static StatementStrategy getStatementStrategy(String sql, Object[] params) {
-        return connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            for (int i = 0; i < params.length; i++) {
-                preparedStatement.setObject(i + 1, params[i]);
-            }
-            return preparedStatement;
-        };
     }
 
     public void delete(Long id) throws SQLException {
-        String sql ="delete from userinfo where id = ?";
+        String sql = "delete from userinfo where id = ?";
         Object[] params = new Object[]{id};
-
-        StatementStrategy statementStrategy = connection -> {
-            PreparedStatement preparedStatement = connection.prepareStatement
-                    (sql);
-            for (int i = 0; i < params.length; i++) {
-                preparedStatement.setObject(i + 1, params[i]);
-            }
-            return preparedStatement;
-        };
-        jdbcContext.jdbcContextForUpdate(statementStrategy);
+        jdbcContext.update(sql, params);
 
     }
 //
