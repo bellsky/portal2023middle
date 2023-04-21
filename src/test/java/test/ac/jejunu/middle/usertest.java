@@ -19,8 +19,10 @@ public class usertest {
         String name = "bellsky";
         String password = "test1234";
 
-        ConnectionMaker connectionMaker = new JejuConnectionMaker();
-        UserDao userDao = new UserDao(connectionMaker);
+        DaoFactory daoFactory = new DaoFactory();
+        UserDao userDao = daoFactory.getUserDao();
+//        ConnectionMaker connectionMaker = new JejuConnectionMaker();
+//        UserDao userDao = new UserDao(connectionMaker);
 
         User user = userDao.findById(id);
         assertThat(String.valueOf(user.getId()), is(id));
@@ -35,8 +37,11 @@ public class usertest {
         user.setName(name);
         user.setPassword(password);
 
-        ConnectionMaker connectionMaker = new JejuConnectionMaker();
-        UserDao userDao = new UserDao(connectionMaker);
+        DaoFactory daoFactory = new DaoFactory();
+        UserDao userDao = daoFactory.getUserDao();
+
+//        ConnectionMaker connectionMaker = new JejuConnectionMaker();
+//        UserDao userDao = new UserDao(connectionMaker);
 
         userDao.insert(user);
         assertThat(user.getId(), greaterThan(1l));
