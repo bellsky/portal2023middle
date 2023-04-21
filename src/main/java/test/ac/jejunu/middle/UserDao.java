@@ -2,7 +2,7 @@ package test.ac.jejunu.middle;
 
 import java.sql.*;
 
-public class UserDao {
+public abstract class UserDao {
     public User findById(Long id) throws ClassNotFoundException, SQLException {
 
         Class.forName("org.mariadb.jdbc.Driver");
@@ -48,4 +48,6 @@ public class UserDao {
         preparedStatement.close();
         connection.close();
     }
+
+    abstract public Connection getConnection() throws ClassNotFoundException, SQLException ;
 }
