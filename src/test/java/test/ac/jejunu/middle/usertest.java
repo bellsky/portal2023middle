@@ -43,4 +43,23 @@ public class usertest {
         assertThat(insertedUser.getName(), is(name));
         assertThat(insertedUser.getPassword(), is(password));
     }
+
+    public void insertHalla() throws SQLException, ClassNotFoundException {
+        String name = "종호2";
+        String password = "5678";
+        User user = new User();
+        user.setName(name);
+        user.setPassword(password);
+        ConnectionMaker connectionMaker = new HallaConnectionMaker();
+        UserDao userDao = new UserDao(connectionMaker);
+        userDao.insert(user);
+        assertThat(user.getId(), greaterThan(1l));
+
+
+        User insertedUser = userDao.findById(user.getId());
+        assertThat(insertedUser.getId().toString(), is(user.getId()));
+        assertThat(insertedUser.getName(), is(name));
+        assertThat(insertedUser.getPassword(), is(password));
+
+    }
 }
