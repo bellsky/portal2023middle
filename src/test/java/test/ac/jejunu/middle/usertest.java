@@ -66,9 +66,9 @@ public class usertest {
         Long id = 1l;
         String name = "bellsky";
         String password = "test1234";
-
-        ConnectionMaker connectionMaker = new HallaConnectionMaker();
-        UserDao userDao = new UserDao(connectionMaker);
+//
+//        ConnectionMaker connectionMaker = new HallaConnectionMaker();
+//        UserDao userDao = new UserDao(connectionMaker);
 
         User user = userDao.findById(id);
         assertThat(String.valueOf(user.getId()), is(id));
@@ -82,9 +82,9 @@ public class usertest {
         User user = new User();
         user.setName(name);
         user.setPassword(password);
-
-        ConnectionMaker connectionMaker = new HallaConnectionMaker();
-        UserDao userDao = new UserDao(connectionMaker);
+//
+//        ConnectionMaker connectionMaker = new HallaConnectionMaker();
+//        UserDao userDao = new UserDao(connectionMaker);
 
         userDao.insert(user);
         assertThat(user.getId(), greaterThan(1l));
