@@ -14,7 +14,7 @@ public class UserDao {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         ResultSet resultSet = null;
-        User user;
+        User user = null;
         try {
             connection = dataSource.getConnection();
             preparedStatement = connection.prepareStatement
@@ -81,41 +81,22 @@ public class UserDao {
     }
 
     public void update(User user) throws SQLException {
-        Connection connection = null;
-        PreparedStatement preparedStatement = null;
-        try {
-            connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement
-                    ("update userinfo set name = ?, password = ? where id = ?");
-
-            preparedStatement.setString(1, user.getName());
-            preparedStatement.setString(2, user.getPassword());
-            preparedStatement.setLong(3, user.getId());
-            preparedStatement.executeUpdate();
-        } finally {
-            try {
-                preparedStatement.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-            try {
-                connection.close();
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        StatementStrategy statementStrategy = new UpdateStatement(user);
+        jdbcContextForUpdate(statementStrategy);
 
     }
-
     public void delete(Long id) throws SQLException {
+        StatementStrategy statementStrategy = new DeleteStatement(id);
+        jdbcContextForUpdate(statementStrategy);
+
+    }
+
+    private void jdbcContextForUpdate(StatementStrategy statementStrategy) throws SQLException {
         Connection connection = null;
         PreparedStatement preparedStatement = null;
         try {
             connection = dataSource.getConnection();
-            preparedStatement = connection.prepareStatement
-                    ("delete from userinfo where id = ?");
-
-            preparedStatement.setLong(1, id);
+            preparedStatement = statementStrategy.makeStatement(connection);
             preparedStatement.executeUpdate();
         } finally {
             try {
@@ -129,7 +110,7 @@ public class UserDao {
                 e.printStackTrace();
             }
         }
-
     }
+
 }
 
