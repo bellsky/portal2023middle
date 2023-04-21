@@ -11,30 +11,30 @@ import java.sql.Driver;
 
 @Configuration
 public class DaoFactory {
+
     @Value("${db.username}")
     private String username;
     @Value("${db.password}")
     private String password;
     @Value("${db.classname}")
-    private String className;
+    private String classname;
     @Value("${db.url}")
     private String url;
 
     @Bean
     public UserDao userDao() throws ClassNotFoundException {
-
         UserDao userDao = new UserDao(dataSource());
-
         return userDao;
     }
-
     @Bean
-    public DataSource dataSource() throws ClassNotFoundException {
+    public DataSource dataSource() throws ClassNotFoundException{
+
         SimpleDriverDataSource dataSource = new SimpleDriverDataSource();
-        dataSource.setDriverClass((Class<? extends Driver>) Class.forName(className));
+        dataSource.setDriverClass((Class<? extends Driver>) Class.forName(classname));
         dataSource.setUrl(url);
         dataSource.setUsername(username);
         dataSource.setPassword(password);
         return dataSource;
     }
+
 }
