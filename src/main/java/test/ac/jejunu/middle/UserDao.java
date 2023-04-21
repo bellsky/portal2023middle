@@ -2,13 +2,15 @@ package test.ac.jejunu.middle;
 
 import java.sql.*;
 
-public abstract class UserDao {
+public class UserDao {
+    private final ConnectionMaker connectionMaker;
+
+    public UserDao(ConnectionMaker connectionMaker) {
+        this.connectionMaker = connectionMaker;
+    }
     public User findById(Long id) throws ClassNotFoundException, SQLException {
 
-        Class.forName("org.mariadb.jdbc.Driver");
-
-        Connection connection = DriverManager.getConnection
-                ("jdbc:mariadb://138.2.32.29:3306/USERINFO", "bellsky", "test1234");
+       Connection connection = connectionMaker.getConnection();
         PreparedStatement preparedStatement = connection.prepareStatement
                 ("select id, name, password from userinfo where ?");
         preparedStatement.setLong(1, id);
@@ -29,10 +31,9 @@ public abstract class UserDao {
     }
     public void insert(User user) throws ClassNotFoundException, SQLException {
 
-        Class.forName("org.mariadb.jdbc.Driver");
+        Connection connection = connectionMaker.getConnection();
 
-        Connection connection = DriverManager.getConnection
-                ("jdbc:mariadb://138.2.32.29:3306/USERINFO", "bellsky", "test1234");
+
         PreparedStatement preparedStatement = connection.prepareStatement
                 ("insert into userinfo (name, password) values ( ?, ? )"
                         , Statement.RETURN_GENERATED_KEYS);
@@ -49,5 +50,4 @@ public abstract class UserDao {
         connection.close();
     }
 
-    abstract public Connection getConnection() throws ClassNotFoundException, SQLException ;
 }
