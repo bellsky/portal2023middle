@@ -1,5 +1,6 @@
 package test.ac.jejunu.middle;
 
+import org.hamcrest.core.IsNull;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Test;
 import org.springframework.context.ApplicationContext;
@@ -48,6 +49,43 @@ public class usertest {
         assertThat(insertedUser.getName(), is(name));
         assertThat(insertedUser.getPassword(), is(password));
     }
+
+    @Test
+    public void update() throws SQLException, ClassNotFoundException {
+        User user = insertedUser();
+        String updatedName = "updatedBellsky";
+        String updatedPassword = "5678";
+        user.setName(updatedName);
+        user.setPassword(updatedPassword);
+        userDao.update(user);
+
+        User updatedUser = userDao.findById(user.getId());
+        assertThat(updatedUser.getName(), is(updatedName));
+        assertThat(updatedUser.getPassword(), is(updatedPassword));
+
+    }
+
+    @Test
+    public void delete() throws SQLException, ClassNotFoundException {
+        User user = insertedUser();
+        userDao.delete(user.getId());
+
+        User deletedUser = userDao.findById(user.getId());
+
+        assertThat(deletedUser, IsNull.nullValue());
+
+    }
+    private User insertedUser() throws ClassNotFoundException, SQLException {
+        String name = "선선선";
+        String password = "9876";
+        User user = new User();
+        user.setName(name);
+        user.setPassword(password);
+        userDao.insert(user);
+        return user;
+    }
+
+
 //
 //    @Test
 //    public void getHalla() throws SQLException, ClassNotFoundException {
